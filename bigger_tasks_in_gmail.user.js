@@ -19,13 +19,21 @@ function enlarge() {
       // create an observer instance
       var observer = new WebKitMutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
-            if(iframe.parentNode.style.height != 0) {
-                observer.takeRecords();
-                observer.disconnect();
-            	iframe.parentNode.style.height = '660px';
-                iframe.contentDocument.getElementById(':sd.fc').style.height = '630px';
-                observer.observe(iframe.parentNode, config);
+            observer.takeRecords();
+            observer.disconnect();
+            
+            var oldHeight = iframe.parentNode.style.height;
+            iframe.parentNode.style.height = oldHeight != '0px' ? '660px' : '0px';
+            var divs = iframe.contentDocument.getElementsByTagName('div');
+            for(var i=0; i<divs.length; i++) {
+                if(divs[i].getAttribute("id") != null
+                   && divs[i].getAttribute("id").indexOf(".fc") >= 0
+                   && divs[i].getAttribute("class") == "Ed") {
+                  divs[i].style.height = oldHeight != '0px' ? '630px' : '0px';
+                }
             }
+            
+            observer.observe(iframe.parentNode, config);
         });    
       });
   
